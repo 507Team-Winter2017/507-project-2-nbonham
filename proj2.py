@@ -3,7 +3,9 @@ from bs4 import BeautifulSoup
 import re
 
 from urllib.request import urlopen
+import urllib.request, urllib.parse, urllib.error
 import ssl
+# And then I use urllib.request.Xxx to reference methods (like urlopen) and objects (like Request) within the urllib.request library.
 
 # Ignore SSL certificate errors
 ctx = ssl.create_default_context()
@@ -89,7 +91,8 @@ pagenation = 1
 umichURL = 'https://www.si.umich.edu'
 
 url = 'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=4'
-html = urlopen(url, context=ctx).read()
+req = urllib.request.Request(url, None, {'User-Agent': 'SI_CLASS'})
+html = urlopen(req, context=ctx).read()
 soup = BeautifulSoup(html, "html.parser")
 
 ## get all the contact details urls on one page in a list
@@ -111,7 +114,9 @@ while pagenation < 6:
 
     url = 'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=4&page=' + str(pagenation)
     pagenation += 1
-    html = urlopen(url, context=ctx).read()
+    #html = urlopen(url, context=ctx).read()
+    req = urllib.request.Request(url, None, {'User-Agent': 'SI_CLASS'})
+    html = urlopen(req, context=ctx).read()
     soup = BeautifulSoup(html, "html.parser")
 
     getSlugs(soup)
@@ -120,7 +125,9 @@ while pagenation < 6:
 ## extract the email out of the approriate location and store that in a list
 for contact in contactURLs :
     url = contact
-    html = urlopen(url, context=ctx).read()
+    #html = urlopen(url, context=ctx).read()
+    req = urllib.request.Request(url, None, {'User-Agent': 'SI_CLASS'})
+    html = urlopen(req, context=ctx).read()
     soup = BeautifulSoup(html, "html.parser")
 
     #<a href="mailto:shevonad@umich.edu">shevonad@umich.edu</a>
